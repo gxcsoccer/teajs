@@ -2,7 +2,7 @@
  * @author XIAOCHEN GAO
  */
 seajs.use('src/util/Utils', function(Utils) {
-	describe("UtilitySpec", function() {
+	describe("Utility Test Suite", function() {
 		describe("Utils.isString", function() {
 			it("isString return true if input argument is a string", function() {
 				expect(Utils.isString("xyz")).toEqual(true);
