@@ -5,13 +5,13 @@ define(function(require, exports, module) {
 	var Utils = require('src/util/Utils');
 
 	function Class(o) {
+		if(Utils.isFunction(o)) {
+			return classify(o);
+		}
+
 		//we are being called w/o new
 		if(!(this instanceof Class) && arguments.length) {
-			if(Utils.isFunction(o)) {
-				return classify(o);
-			} else {
-				return Class.extend.apply(Class, arguments);
-			}
+			return Class.extend.apply(Class, arguments);
 		}
 	}
 
@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 	};
 
 	// tests if we can get super in .toString()
-	fnTest = /xyz/.test(function() { xyz;
+	fnTest = /peter/.test(function() { peter;
 	}) ? /\b_super\b/ : /.*/,
 
 	// overwrites an object with methods, sets up _super
@@ -64,8 +64,9 @@ define(function(require, exports, module) {
 	};
 
 	Class.extend = function(proto) {
+		proto = proto || {};
 		var _super = this.prototype;
-		var prototype = createProto(this);
+		var prototype = createProto(_super);
 
 		// Copy the properties over onto the new prototype
 		inheritProps(proto, _super, prototype);
@@ -90,10 +91,14 @@ define(function(require, exports, module) {
 		while( item = items.shift()) {
 			Utils.mix(proto, item.prototype || item);
 		}
+
+		return this;
 	};
 
-	Class.statics = function(props) {
+	Class.statics = function(staticProperties) {
 		Utils.mix(this, staticProperties);
+
+		return this;
 	};
 
 	return Class;
