@@ -3,8 +3,7 @@
  */
 define(function(require, exports, module) {
 	'use strict';
-	var toString = Object.prototype.toString;
-
+	var seed = 0;
 
 	return {
 		later: function(fn, ms, context) {
@@ -32,6 +31,9 @@ define(function(require, exports, module) {
 				wrapper.stop();
 				wrapper.apply(null, arguments);
 			};
+		},
+		nextUid: function() {
+			return (seed++) + '';
 		}
 	};
 });
