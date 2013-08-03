@@ -6,14 +6,20 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 		<title>runner</title>
+		<link rel="shortcut icon" type="image/png" href="../lib/jasmine_favicon.png">
 		<link  href="../lib/jasmine.css" rel="stylesheet" />
+		<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"></script>
 		<script type="text/javascript" src="../lib/sea-debug.js"></script>
 		<script type="text/javascript" src="../lib/jasmine.js"></script>
 		<script type="text/javascript" src="../lib/jasmine-html.js"></script>
 
 		<script type="text/javascript">
 			seajs.config({
-				'base' : '../'
+				'base': '../',
+				'paths': {
+					'core': 'src/core'
+				},
+				'charset': 'utf-8' 
 			});
 		</script>
 

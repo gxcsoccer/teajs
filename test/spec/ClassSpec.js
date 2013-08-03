@@ -1,7 +1,7 @@
 /**
  * @author XIAOCHEN GAO
  */
-seajs.use(["src/class/Class", "src/util/Utils"], function(Class, Utils) {
+seajs.use(["core/class/Class"], function(Class) {
 	describe("Class Test Suite", function() {
 		beforeEach(function() {
 			this.addMatchers({
@@ -19,7 +19,7 @@ seajs.use(["src/class/Class", "src/util/Utils"], function(Class, Utils) {
 				}
 			});
 
-			expect(Utils.isFunction(cls)).toEqual(true);
+			expect($.isFunction(cls)).toEqual(true);
 			var obj = new cls();
 			expect(obj.foo).toBe('bar');
 			expect(obj.xyz).toBeDefined();
@@ -29,7 +29,7 @@ seajs.use(["src/class/Class", "src/util/Utils"], function(Class, Utils) {
 			var cls = Class(function() {
 				this.foo = 'bar';
 			});
-			expect(Utils.isFunction(cls)).toEqual(true);
+			expect($.isFunction(cls)).toEqual(true);
 			var obj = new cls();
 			expect(obj.foo).toBe('bar');
 		});

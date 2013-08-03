@@ -2,15 +2,15 @@
  * @author XIAOCHEN GAO
  */
 define(function(require, exports, module) {
-	var Utils = require('src/util/Utils');
+	'use strict';
 
 	function Class(o) {
-		if(Utils.isFunction(o)) {
+		if ($.isFunction(o)) {
 			return classify(o);
 		}
 
 		//we are being called w/o new
-		if(!(this instanceof Class) && arguments.length) {
+		if (!(this instanceof Class) && arguments.length) {
 			return Class.extend.apply(Class, arguments);
 		}
 	}
@@ -23,13 +23,14 @@ define(function(require, exports, module) {
 	}
 
 	// Shared empty constructor function to aid in prototype-chain creation.
-	function Ctor() {
-	}
+
+	function Ctor() {}
 
 	// See: http://jsperf.com/object-create-vs-new-ctor
-	var createProto = Object.__proto__ ? function(proto) {
+	var createProto = Object.__proto__ ?
+	function(proto) {
 		return {
-			__proto__ : proto
+			__proto__: proto
 		};
 	} : function(proto) {
 		Ctor.prototype = proto;
@@ -37,17 +38,19 @@ define(function(require, exports, module) {
 	};
 
 	// tests if we can get super in .toString()
-	fnTest = /peter/.test(function() { peter;
+	var fnTest = /peter/.test(function() {
+		peter;
 	}) ? /\b_super\b/ : /.*/,
 
 	// overwrites an object with methods, sets up _super
 	inheritProps = function(newProps, oldProps, addTo) {
 		addTo = addTo || newProps
-		for(var name in newProps ) {
+		for (var name in newProps) {
 			// Check if we're overwriting an existing function
 			addTo[name] = typeof newProps[name] == "function" && typeof oldProps[name] == "function" && fnTest.test(newProps[name]) ? (function(name, fn) {
 				return function() {
-					var tmp = this._super, ret;
+					var tmp = this._super,
+						ret;
 
 					// Add a new ._super() method that is the same method
 					// but on the super-class
@@ -72,7 +75,7 @@ define(function(require, exports, module) {
 		inheritProps(proto, _super, prototype);
 
 		function SubClass() {
-			if(this.constructor === SubClass && this.init) {
+			if (this.constructor === SubClass && this.init) {
 				this.init.apply(this, arguments);
 			}
 		}
@@ -85,18 +88,19 @@ define(function(require, exports, module) {
 	};
 
 	Class.implement = function(items) {
-		Utils.isArray(items) || ( items = [items]);
-		var proto = this.prototype, item;
+		$.isArray(items) || (items = [items]);
+		var proto = this.prototype,
+			item;
 
-		while( item = items.shift()) {
-			Utils.mix(proto, item.prototype || item);
+		while (item = items.shift()) {
+			$.extend(proto, item.prototype || item);
 		}
 
 		return this;
 	};
 
 	Class.statics = function(staticProperties) {
-		Utils.mix(this, staticProperties);
+		$.extend(this, staticProperties);
 
 		return this;
 	};
