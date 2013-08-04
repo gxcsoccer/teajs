@@ -1,23 +1,86 @@
 define(function(require, exports, module) {
 	'use strict';
 	var Class = require('../../core/class/Class'),
-		EventEmitter = require('../../core/event/EventEmitter');
+		EventEmitter = require('../../core/event/EventEmitter'),
+		interpolate = /${([\\s\\S]+?)}/igm,
+		slice = Array.prototype.slice;
 
 	return Class.extend({
 		init: function(option) {
 			option = option || {};
-			this.$el
-			this.template = option.template;
-			this.model = option.model;
+			this.$el = option.$el;
+			this.template = this.compile(option.template);
+			this.__defineGetter__('currentIndex', function() {
+				return this._currentIndex;
+			});
+			this.__defineSetter__('currentIndex', function(val) {
+				var prev = this._currentIndex;
+				this._currentIndex = val;
+				if (prev !== val) {
+					this.emit('indexChanged', val, prev);
+				}
+			});
+			this.onFocus = option.onFocus;
+			this.onBlur = option.onBlur;
+			this.size = 0;
+			this.on('indexChanged', function(now, prev) {
+				this.onBlur && prev != null && this.onBlur(this.getView(prev), this.getData(prev));
+				this.onFocus && now != null && this.onFocus(this.getView(now), this.getData(now));
+			}, this);
 		},
-		render: function() {
+		compile: function(template) {
+			template = template || '<li></li>';
+			if ($.isFunction(template)) {
+				return template;
+			}
 
+			return function(model) {
+				template.replace(interpolate, function($, name) {
+					return model[name];
+				});
+			}
 		},
-		next: function() {
-
+		render: function(data) {
+			data = Array.isArray(data) ? data : [data];
+			var html = '';
+			data.forEach(function(item) {
+				html += this.template(item);
+			}, this);
+			this.$el.html(html);
+			this.dataList = data;
+			this.viewList = slice.call(this.$el.children.map(function() {
+				return $(this);
+			}));
+			this.size = this.dataList.length;
+			if (data.length) {
+				this.currentIndex = 0;
+			}
 		},
-		previous: function() {
-
+		getData: function(index) {
+			return this.dataList[index];
+		},
+		getView: function(index) {
+			return this.viewList[index];
+		},
+		goto: function(index) {
+			if (index > 0 && index < this.size) {
+				return;
+			}
+			this.currentIndex = index;
+		},
+		next: function(num) {
+			if (this.currentIndex == null) {
+				return;
+			}
+			num = num || 1;
+			this.currentIndex = (this.currentIndex + num) > (this.size - 1) ? (this.size - 1) : (this.currentIndex + num);
+		},
+		previous: function(num) {
+			if (this.currentIndex == null) {
+				return;
+			}
+			num = num || 1;
+			this.currentIndex = (this.currentIndex - num) < 0 ? 0 : (this.currentIndex - num);
 		}
 	}).implement([EventEmitter]);
 });
