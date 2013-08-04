@@ -62,6 +62,12 @@ define(function(require, exports, module) {
 		getView: function(index) {
 			return this.viewList[index];
 		},
+		getCurrentView: function() {
+			return this.viewList[this.currentIndex];
+		},
+		getCurrentData: function() {
+			return this.dataList[this.currentIndex];
+		},
 		goto: function(index) {
 			if (index > 0 && index < this.size) {
 				return;
