@@ -3,13 +3,14 @@ define(function(require, exports, module) {
 	var Class = require('../class/Class'),
 		EventEmitter = require('../event/EventEmitter'),
 		Utils = require('../util/Utils'),
+		juicer = require('juicer'),
 		root = {
 			$el: $(document.body),
 			children: []
 		};
 
 	return Class.extend({
-		tag: '<div>',
+		template: '<div>',
 		init: function(container, option) {
 			option = option || {};
 			this.container = container || root;
@@ -29,7 +30,7 @@ define(function(require, exports, module) {
 			return this.$el.find(selector);
 		},
 		makeElement: function() {
-			return $(this.tag, {
+			return $(this.template, {
 				'id': this.id
 			});
 		},
