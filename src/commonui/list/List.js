@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 	'use strict';
 	var Class = require('../../core/class/Class'),
 		EventEmitter = require('../../core/event/EventEmitter'),
-		interpolate = /${([\\s\\S]+?)}/igm,
+		interpolate = /\${([\s\S]+?)}/igm,
 		slice = Array.prototype.slice;
 
 	return Class.extend({
@@ -48,7 +48,7 @@ define(function(require, exports, module) {
 			}, this);
 			this.$el.html(html);
 			this.dataList = data;
-			this.viewList = slice.call(this.$el.children.map(function() {
+			this.viewList = slice.call(this.$el.children().map(function() {
 				return $(this);
 			}));
 			this.size = this.dataList.length;
@@ -69,7 +69,7 @@ define(function(require, exports, module) {
 			return this.dataList[this.currentIndex];
 		},
 		goto: function(index) {
-			if (index > 0 && index < this.size) {
+			if (index < 0 && index >= this.size) {
 				return;
 			}
 			this.currentIndex = index;

@@ -10,7 +10,7 @@ define(function(require, exports, module) {
 		};
 
 	return Class.extend({
-		template: '<div>',
+		template: '<div></div>',
 		init: function(container, option) {
 			option = option || {};
 			this.container = container || root;
