@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
 	'use strict';
+	require('./ui-input.css');
 	var Class = require('../../core/class/Class'),
 		EventEmitter = require('../../core/event/EventEmitter');
 
@@ -41,12 +42,14 @@ define(function(require, exports, module) {
 			this.$el.removeClass('ui-input-active');
 		},
 		inputChar: function(char) {
-			this.text = this.text.substring(0, this.caretOffset) + char + this.text.substring(this.caretOffset);
-			this.caretOffset += 1;
+			var offset = this.caretOffset;
+			this.text = this.text.substring(0, offset) + char + this.text.substring(offset);
+			this.caretOffset = offset + 1;
 		},
 		deleteChar: function() {
-			this.text = this.text.substring(0, this.caretOffset - 1) + this.text.substring(this.caretOffset);
-			this.caretOffset -= 1;
+			var offset = this.caretOffset;
+			this.text = this.text.substring(0, offset - 1) + this.text.substring(offset);
+			this.caretOffset = offset - 1;
 		},
 		moveLeft: function() {
 			this.caretOffset--;

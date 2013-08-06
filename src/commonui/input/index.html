@@ -4,8 +4,46 @@
 		<meta charset="utf-8" />
 		<title>Input</title>
 		<link rel="stylesheet" type="text/css" href="ui-input.css">
+		<script type="text/javascript" src="../../../lib/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="../../../lib/sea.js"></script>
 	</head>
 	<body>
-		<input type="text" class="ui-input" value="123" />
+		<input id="input-ex" type="text" class="ui-input" value="123" />
 	</body>
+	<script type="text/javascript">
+		seajs.config({
+			'base': './'
+		})
+
+		seajs.use('./Input', function(Input) {
+			var inputObj = new Input({
+				$el: $('#input-ex'),
+				text: 'hello world!',
+				placeholder: 'input ...'
+			});
+
+			window.onkeydown = function(ev) {
+				var which = ev.which;
+				switch(which) {
+					case 37:
+						inputObj.moveLeft();
+						break;
+					case 39:
+						inputObj.moveRight();
+						break;
+					case 66:
+						inputObj.deleteChar();
+						break;
+					default:
+						return true;
+				}
+				return false;
+			}
+
+			window.onkeypress = function(ev) {
+				inputObj.inputChar(String.fromCharCode(ev.charCode));
+				return false;
+			}
+		});
+	</script>
 </html>
