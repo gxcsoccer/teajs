@@ -1,51 +1,58 @@
 define(function(require, exports, module) {
 	'use strict';
 	var Class = require('../../core/class/Class'),
-		EventEmitter = require('../../core/event/EventEmitter'),
-		hiddenCanvas = document.createElement('canvas'),
-		hiddenContext = hiddenCanvas.getContext('2d'),
-		juicer = require('juicer');
+		EventEmitter = require('../../core/event/EventEmitter');
 
 	return Class.extend({
 		init: function(option) {
-			$.extend(this, option);
+			this.$el = option.$el;
 			this.$el.addClass('ui-input');
-			this.text = this.text || text;
-
-			this.__defineGetter__('font', function() {
-				return this._font || (this._font = this.$el.css('font'));
+			this.input = this.$el[0];
+			this.input.type = option.type || 'text';
+			this.input.placeholder = option.placeholder || '';
+			this.input.value = option.text || '';
+			this.__defineGetter__('text', function() {
+				return this.input.value;
 			});
-			this.__defineGetter__('width', function() {
-				return this._width || (this._width = this.$el.width());
+			this.__defineSetter__('text', function(val) {
+				this.input.value = val;
 			});
-
-			this.cursorOffset = 0;
-			hiddenContext.font = this.font;
-			var contentWidth = hiddenContext.measureText(text).width;
-		},
-		inputChar: function(char) {
-
-		},
-		deleteChar: function() {
-
-		},
-		render: function(text) {
-			text = this.text;
-			hiddenContext.font = this.font;
-			var contentWidth = hiddenContext.measureText(text).width;
-
+			this.__defineGetter__('caretOffset', function() {
+				return this.input.selectionStart != null ? this.input.selectionStart : this.text.length;
+			});
+			this.__defineSetter__('caretOffset', function(val) {
+				if (val < 0) {
+					val = 0;
+				}
+				if (val > this.text.length) {
+					val = this.text.length;
+				}
+				this.input.blur();
+				this.input.focus();
+				this.input.setSelectionRange(val, val);
+			});
 		},
 		active: function() {
-
+			this.caretOffset = this.text.length;
+			this.$el.addClass('ui-input-active');
 		},
 		deactive: function() {
-
+			this.input.blur();
+			this.$el.removeClass('ui-input-active');
+		},
+		inputChar: function(char) {
+			this.text = this.text.substring(0, this.caretOffset) + char + this.text.substring(this.caretOffset);
+			this.caretOffset += 1;
+		},
+		deleteChar: function() {
+			this.text = this.text.substring(0, this.caretOffset - 1) + this.text.substring(this.caretOffset);
+			this.caretOffset -= 1;
 		},
 		moveLeft: function() {
-
+			this.caretOffset--;
 		},
 		moveRight: function() {
-
+			this.caretOffset++;
 		}
 	});
 });

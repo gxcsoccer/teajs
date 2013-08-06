@@ -1,0 +1,17 @@
+.ui-input {
+	display: inline-block;
+	padding: 5px 20px;
+	outline: 0px;
+	width: 350px;
+	height: 50px;
+	border: solid 2px #12C; 
+	border-radius: 4px;
+	background: #fff;
+	color: #000;
+	font-size: 20px;
+	line-height: 30px;
+}
+
+.ui-input-active {
+	
+}
