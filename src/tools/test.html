@@ -66,5 +66,14 @@
 	    		y: 0
 	    	})
 	    });
+
+	    window.onkeydown = function(ev) {
+	    	alert('onkeydown: ' + ev.keyCode);
+	    }
+
+	    var e = jQuery.Event("keydown");//模拟一个键盘事件
+        e.keyCode = 13;//keyCode=13是回车
+        $(window).trigger(e);//模拟页码框按下回车
+
 	</script>
 </html>
