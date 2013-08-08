@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Offset Test</title>
+		<script type="text/javascript" src="../../lib/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="../../lib/sea.js"></script>
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
+			#container {
+				position: relative;
+				top: 500px;
+				left: 500px;
+			}
+
+			#box {
+				position: absolute;
+				width: 100px;
+				height: 100px;
+				background: red;
+				top: 0;
+				left: 0;
+				z-index: 1;
+			}
+
+			#box2 {
+				position: absolute;
+				width: 200px;
+				height: 200px;
+				background: green;
+				top: 200px;
+				left: 200px;
+			} 
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="box"></div>
+		</div>
+		<div id="box2"></div>
+	</body>
+	<script type="text/javascript">
+		function getOffset(element) {
+	        var box = element.getBoundingClientRect(),
+	            docElem = document.documentElement;
+
+	        // < ie8 不支持 win.pageXOffset, 则使用 docElem.scrollLeft
+	        return {
+	            left: box.left + (window.pageXOffset || docElem.scrollLeft) - (docElem.clientLeft || document.body.clientLeft || 0),
+	            top: box.top + (window.pageYOffset || docElem.scrollTop) - (docElem.clientTop || document.body.clientTop || 0)
+	        };
+	    }
+
+	    var box = document.querySelector('#box'),
+	    	box2 = document.querySelector('#box2');
+	    console.log(getOffset(box));
+
+	    seajs.use('./Position', function(Position) {
+	    	Position.pin(box, {
+	    		element: box2,
+	    		x: 0,
+	    		y: 0
+	    	})
+	    });
+	</script>
+</html>
