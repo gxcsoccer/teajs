@@ -23,7 +23,7 @@ define(function(require, exports, module) {
 			this.onFocus = option.onFocus;
 			this.onBlur = option.onBlur;
 			this.size = 0;
-			this.on('indexChanged', function(now, prev) {
+			this.on('indexChanged', function(prev, now) {
 				this.onBlur && prev != null && this.onBlur(this.getView(prev), this.getData(prev));
 				this.onFocus && now != null && this.onFocus(this.getView(now), this.getData(now));
 			}, this);

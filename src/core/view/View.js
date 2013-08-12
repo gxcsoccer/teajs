@@ -18,8 +18,12 @@ define(function(require, exports, module) {
 			this.children = [];
 
 			this.id = option.id || Utils.nextUid();
-			this.$el = option.$el || this.makeElement();
-			this.attach();
+			if (option.$el) {
+				this.$el = option.$el
+			} else {
+				this.$el = this.makeElement();
+				this.attach();
+			}
 			this.show();
 			this.onInit(option);
 		},
