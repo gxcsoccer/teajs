@@ -2,52 +2,85 @@
  * @author g00201348
  */
 define(function(require, exports, module) {
-    var EventEmitter = require("core/event/EventEmitter");
-    var inQueryData = false;
+    var Class = require('core/class/Class'),
+        EventEmitter = require('core/event/EventEmitter'),
+        timedChunk = function(items, process, context) {
+            var timer, todo, dtd = $.Deferred();
 
-    var timedChunk = function(items, process, context) {
-        var timer, todo, dtd = $.Deferred();
+            function start() {
+                // create a clone the original
+                todo = [].concat($.makeArray(items));
+                if (todo.length > 0) {
+                    (function() {
+                        var st = +new Date(),
+                            item;
+                        do {
+                            item = todo.shift();
+                            process.call(context, item);
+                        } while (todo.length > 0 && (+new Date() - st < 50))
 
-        function start() {
-            // create a clone the original
-            todo = [].concat($.makeArray(items));
-            if (todo.length > 0) {
-                (function() {
-                    var st = +new Date(),
-                        item;
-                    do {
-                        item = todo.shift();
-                        process.call(context, item);
-                    } while (todo.length > 0 && (+new Date() - st < 50))
+                        if (todo.length > 0) {
+                            timer = setTimeout(arguments.callee, 25);
+                        } else {
+                            dtd.resolve();
+                        }
+                    })();
+                } else {
+                    dtd.reject();
+                }
+                return dtd;
+            };
 
-                    if (todo.length > 0) {
-                        timer = setTimeout(arguments.callee, 25);
-                    } else {
-                        dtd.resolve();
-                    }
-                })();
-            } else {
+            dtd.stop = function() {
+                if (timer) {
+                    clearTimeout(timer);
+                    todo = [];
+                }
                 dtd.reject();
+                return dtd;
             }
+
+            dtd.start = start;
             return dtd;
+        },
+        defaultOption = {
+            //$el: $('#container'),
+            colWidth: 200,
+            createItem: function() {
+                // ...
+            },
+            queryFunction: function(offset, count) {
+                return $.Deferred(function(dtd) {
+                    dtd.resolve({
+                        list: []
+                    });
+                });
+            },
+            preloadRow: 1
         };
 
-        dtd.stop = function() {
-            if (timer) {
-                clearTimeout(timer);
-                todo = [];
-            }
-            dtd.reject();
-            return dtd;
-        }
+    return Class.extend({
+        init: function(option) {
+            $.extend(this, defaultOption, option);
+        },
+        show: function(offset, count) {
+            this.$el.show();
+            this.reset();
+        },
+        hide: function() {
+            this.$el.hide();
+        },
+        reset: function() {
 
-        dtd.start = start;
-        return dtd;
-    };
-    var WaterfallObj = function(option) {
-        $.extend(this, option);
-        var self = this;
+        }
+    });
+
+
+    var Waterfall = function(option) {
+        $.extend(this, defaultOption, option);
         this.reset();
+
+
         this.__defineGetter__("currentIndex", function() {
             return this._currentIndex;
         });
