@@ -71,6 +71,29 @@ define(function(require, exports, module) {
             this.$el.hide();
         },
         reset: function() {
+            this.viewList = [];
+            this.dataList = [];
+            this.noMoreData = false;
+            this.currentIndex = null;
+            // 清空子元素
+            this.$el.empty();
+        },
+        active: function() {
+
+        },
+        deactive: function() {
+
+        },
+        next: function() {
+
+        },
+        previous: function() {
+
+        },
+        nextRow: function() {
+
+        },
+        previousRow: function() {
 
         }
     });
