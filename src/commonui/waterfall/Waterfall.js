@@ -62,10 +62,43 @@ define(function(require, exports, module) {
     return Class.extend({
         init: function(option) {
             $.extend(this, defaultOption, option);
+            this.reset();
+
+            this.__defineGetter__('currentIndex', function() {
+                return this._currentIndex;
+            });
+            this.__defineSetter__('currentIndex', function(val) {
+                var prev = this._currentIndex;
+                this._currentIndex = val;
+
+                // ...
+            });
+        },
+        loadMore: function(offset, count) {
+            offset = offset || 0;
+            count = count || -1;
+            return this.queryFunction(offset, count).done((function(res) {
+                var list = res.list || [],
+                    items;
+                if (list.length === 0 || (count > 0 && list.length < count)) {
+                    this.noMoreData = true;
+                }
+                this.dataList = this.dataList.concat(list);
+                items = list.map((function(data) {
+                    return this.createItem(data);
+                }).bind(this));
+                this.addItems(items);
+            }).bind(this));
         },
         show: function(offset, count) {
-            this.$el.show();
             this.reset();
+            this.$el.show();
+            this.recalculate();
+            loadMore().done((function(res) {
+                if (res && res.list.length == 0) {
+                    this.emit('noData');
+                }
+            }).bind(this));
         },
         hide: function() {
             this.$el.hide();
@@ -78,25 +111,37 @@ define(function(require, exports, module) {
             // 清空子元素
             this.$el.empty();
         },
-        active: function() {
-
-        },
-        deactive: function() {
-
-        },
         next: function() {
-
+            if (this.currentIndex == null) return;
+            this.currentIndex = this.currentIndex < (this.dataList.length - 1) ? (this.currentIndex + 1) : (this.dataList.length - 1);
         },
         previous: function() {
-
+            if (this.currentIndex == null) return;
+            this.currentIndex = this.currentIndex > 0 ? (this.currentIndex - 1) : 0;
         },
         nextRow: function() {
-
+            
         },
         previousRow: function() {
 
+        },
+        recalculate: function() {
+            this.containerWidth = this.$el.width();
+            this.colItems = [];
+            this.curColHeights = [];
+            this.colCount = Math.max(1, Math.floor(this.containerWidth / (this.colWidth == 0 ? 1 : this.colWidth)));
+
+            // 初始化各列高度为0
+            for (var i = 0; i < this.colCount; i += 1) {
+                this.curColHeights[i] = 0;
+            }
         }
-    });
+    }).implement([EventEmitter])
+        .statics({
+            get: function(option) {
+                return new this(option);
+            }
+        });
 
 
     var Waterfall = function(option) {
