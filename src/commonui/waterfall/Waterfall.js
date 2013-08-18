@@ -97,6 +97,8 @@ define(function(require, exports, module) {
             loadMore().done((function(res) {
                 if (res && res.list.length == 0) {
                     this.emit('noData');
+                } else {
+                    this.currentIndex = 0;
                 }
             }).bind(this));
         },
@@ -120,10 +122,12 @@ define(function(require, exports, module) {
             this.currentIndex = this.currentIndex > 0 ? (this.currentIndex - 1) : 0;
         },
         nextRow: function() {
-            
+            if (this.currentIndex == null) return;
+            this.currentIndex = (this.currentIndex + this.colCount) < (this.dataList.length - 1) ? (this.currentIndex + this.colCount) : (this.dataList.length - 1);
         },
         previousRow: function() {
-
+            if (this.currentIndex == null) return;
+            (this.currentIndex - this.colCount) > 0 ? (this.currentIndex - this.colCount) : 0;
         },
         recalculate: function() {
             this.containerWidth = this.$el.width();
@@ -135,6 +139,18 @@ define(function(require, exports, module) {
             for (var i = 0; i < this.colCount; i += 1) {
                 this.curColHeights[i] = 0;
             }
+        },
+        getData: function(index) {
+            return this.dataList[index];
+        },
+        getCurrentData: function() {
+            return this.dataList[this.currentIndex];
+        },
+        getView: function(index) {
+            return this.viewList[index];
+        },
+        getCurrentView: function() {
+            return this.viewList[this.currentIndex];
         }
     }).implement([EventEmitter])
         .statics({
