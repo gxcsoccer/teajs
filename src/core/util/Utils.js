@@ -34,6 +34,45 @@ define(function(require, exports, module) {
 		},
 		nextUid: function() {
 			return (seed++) + '';
+		},
+		timedChunk: function(items, processor, context) {
+			var dtd = $.Deferred(),
+				timer, todo;
+
+			dtd.start = function() {
+				todo = [].concat($.makeArray(items));
+				if (todo.length == 0) {
+					return dtd.resolve();
+				}
+
+				function handler() {
+					var st = +new Date(),
+						item;
+					do {
+						item = todo.shift();
+						processor.call(context, item);
+					} while (todo.length > 0 && (+new Date() - st < 50))
+
+					if (todo.length > 0) {
+						timer = setTimeout(handler, 25);
+					} else {
+						dtd.resolve();
+					}
+				}
+				handler();
+				return dtd;
+			};
+
+			dtd.stop = function() {
+				if (timer) {
+					clearTimeout(timer);
+					todo = [];
+				}
+				dtd.reject();
+				return dtd;
+			}
+
+			return dtd;
 		}
 	};
 });

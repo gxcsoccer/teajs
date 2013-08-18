@@ -4,45 +4,7 @@
 define(function(require, exports, module) {
     var Class = require('core/class/Class'),
         EventEmitter = require('core/event/EventEmitter'),
-        timedChunk = function(items, process, context) {
-            var timer, todo, dtd = $.Deferred();
-
-            function start() {
-                // create a clone the original
-                todo = [].concat($.makeArray(items));
-                if (todo.length > 0) {
-                    (function() {
-                        var st = +new Date(),
-                            item;
-                        do {
-                            item = todo.shift();
-                            process.call(context, item);
-                        } while (todo.length > 0 && (+new Date() - st < 50))
-
-                        if (todo.length > 0) {
-                            timer = setTimeout(arguments.callee, 25);
-                        } else {
-                            dtd.resolve();
-                        }
-                    })();
-                } else {
-                    dtd.reject();
-                }
-                return dtd;
-            };
-
-            dtd.stop = function() {
-                if (timer) {
-                    clearTimeout(timer);
-                    todo = [];
-                }
-                dtd.reject();
-                return dtd;
-            }
-
-            dtd.start = start;
-            return dtd;
-        },
+        timedChunk = require('core/util/Utils').timedChunk,
         defaultOption = {
             //$el: $('#container'),
             colWidth: 200,
