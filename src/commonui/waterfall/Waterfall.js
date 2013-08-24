@@ -168,13 +168,21 @@ define(function(require, exports, module) {
             needToAdd && this.$el.append($item);
             left = col * this.colWidth;
             top = this.curColHeights[col];
-            $item.css({
-                left: left,
-                top: top
-            });
+            if (this.rowHeight) {
+                $item.css({
+                    left: left,
+                    top: top,
+                    height: this.rowHeight
+                });
+            } else {
+                $item.css({
+                    left: left,
+                    top: top
+                });
+            }
 
             // 载入DOM树后才能取高度，累加到对应列
-            this.curColHeights[col] += $item.outerHeight(true);
+            this.curColHeights[col] += this.rowHeight || $item.outerHeight(true);
             this.colItems[col] = this.colItems[col] || [];
             this.colItems[col].push($item);
             // 记录所在列，便于后面调整
