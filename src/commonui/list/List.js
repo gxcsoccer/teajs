@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
 	'use strict';
-	var Class = require('../../core/class/Class'),
-		EventEmitter = require('../../core/event/EventEmitter'),
+	var Class = require('core/class/Class'),
+		EventEmitter = require('core/event/EventEmitter'),
 		interpolate = /\${([\s\S]+?)}/igm,
 		slice = Array.prototype.slice;
 
