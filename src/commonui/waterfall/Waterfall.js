@@ -73,15 +73,15 @@ define(function(require, exports, module) {
                 this.addItems(items);
             }).bind(this));
         },
-        show: function(offset, count) {
+        show: function(offset, count, startIndex) {
             this.reset();
             this.$el.show();
             this.recalculate();
             loadMore().done((function(res) {
                 if (res && res.list.length == 0) {
                     this.emit('noData');
-                } else {
-                    this.currentIndex = 0;
+                } else if (startIndex != null) {
+                    this.currentIndex = startIndex;
                 }
             }).bind(this));
         },
