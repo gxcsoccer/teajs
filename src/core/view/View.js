@@ -79,7 +79,7 @@ define(function(require, exports, module) {
 		destory: function() {
 			this.detach();
 			var index = this.container.children.indexOf(this);
-			index >= 0 ? this.container.children.splice(index, 1);
+			index >= 0 && this.container.children.splice(index, 1);
 
 			this.children.forEach(function(child) {
 				child.destory();

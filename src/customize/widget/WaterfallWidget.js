@@ -23,7 +23,8 @@ define(function(require, exports, module) {
 				colWidth: option.colWidth,
 				queryFunction: option.queryFunction,
 				createItem: option.createItem,
-				preloadRow: preloadRow
+				preloadRow: option.preloadRow || 1,
+				rowHeight: option.rowHeight
 			});
 
 			this.__defineGetter__('offsetTop', function() {
@@ -35,9 +36,9 @@ define(function(require, exports, module) {
 			});
 
 			var pivotFn = {
-				edge: (function(currentRow, prevRow) {
-					var guardTop = (currentRow - 1) * this.rowHeight,
-						guardBottom = currentRow * this.rowHeight;
+				edge: (function(prevRow, currentRow) {
+					var guardTop = currentRow > 1 ? ((currentRow - 1) * this.waterfall.rowHeight) : 0,
+						guardBottom = currentRow * this.waterfall.rowHeight;
 
 					if (guardBottom > (this.containerHeight - this.offsetTop)) {
 						this.offsetTop = this.containerHeight - guardBottom;
@@ -45,8 +46,17 @@ define(function(require, exports, module) {
 						this.offsetTop = -guardTop;
 					}
 				}).bind(this),
-				middle: (function(currentRow, prevRow) {
+				middle: (function(prevRow, currentRow) {
+					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2)),
+						containerHeight = m * this.waterfall.rowHeight,
+						guardTop = currentRow > 1 ? ((currentRow - 1) * this.waterfall.rowHeight) : 0,
+						guardBottom = currentRow * this.waterfall.rowHeight;
 
+					if (guardBottom > (containerHeight - this.offsetTop)) {
+						this.offsetTop = containerHeight - guardBottom;
+					} else if (guardTop < -this.offsetTop) {
+						this.offsetTop = -guardTop;
+					}
 				}).bind(this)
 			}
 
@@ -58,6 +68,8 @@ define(function(require, exports, module) {
 				$cur && $cur.addClass('focused');
 			}, this);
 			this.waterfall.on('rowChanged', pivotFn[this.pivot], this);
+
+			this.waterfall.show(0, 15, 0);
 		},
 		handleEvent: function(event) {
 			switch (event.type) {

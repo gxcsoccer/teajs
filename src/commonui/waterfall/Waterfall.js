@@ -77,7 +77,7 @@ define(function(require, exports, module) {
             this.reset();
             this.$el.show();
             this.recalculate();
-            loadMore().done((function(res) {
+            this.loadMore(offset, count).done((function(res) {
                 if (res && res.list.length == 0) {
                     this.emit('noData');
                 } else if (startIndex != null) {
@@ -110,7 +110,7 @@ define(function(require, exports, module) {
         },
         previousRow: function() {
             if (this.currentIndex == null) return;
-            (this.currentIndex - this.colCount) > 0 ? (this.currentIndex - this.colCount) : 0;
+            this.currentIndex = (this.currentIndex - this.colCount) > 0 ? (this.currentIndex - this.colCount) : 0;
         },
         recalculate: function() {
             this.containerWidth = this.$el.width();
