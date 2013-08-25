@@ -47,15 +47,12 @@ define(function(require, exports, module) {
 					}
 				}).bind(this),
 				middle: (function(prevRow, currentRow) {
-					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2)),
-						containerHeight = m * this.waterfall.rowHeight,
-						guardTop = currentRow > 1 ? ((currentRow - 1) * this.waterfall.rowHeight) : 0,
-						guardBottom = currentRow * this.waterfall.rowHeight;
+					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2));
 
-					if (guardBottom > (containerHeight - this.offsetTop)) {
-						this.offsetTop = containerHeight - guardBottom;
-					} else if (guardTop < -this.offsetTop) {
-						this.offsetTop = -guardTop;
+					if (currentRow < m) {
+						this.offsetTop = 0;
+					} else {
+						this.offsetTop = (m - currentRow) * this.waterfall.rowHeight;
 					}
 				}).bind(this)
 			}
