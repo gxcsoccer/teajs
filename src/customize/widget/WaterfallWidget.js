@@ -47,10 +47,15 @@ define(function(require, exports, module) {
 					}
 				}).bind(this),
 				middle: (function(prevRow, currentRow) {
-					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2));
+					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2)),
+						t = Math.ceil(this.containerHeight / this.waterfall.rowHeight),
+						noMoreData = this.waterfall.noMoreData,
+						totalRow = Math.ceil(this.waterfall.dataList.length / this.waterfall.colCount);
 
 					if (currentRow < m) {
 						this.offsetTop = 0;
+					} else if (noMoreData && (totalRow - currentRow) < (t - m)) {
+						this.offsetTop = (t - totalRow - m + 1) * this.waterfall.rowHeight;
 					} else {
 						this.offsetTop = (m - currentRow) * this.waterfall.rowHeight;
 					}

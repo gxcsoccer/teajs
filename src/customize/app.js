@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 		queryFunction: function(offset, count) {
 			return $.Deferred(function(dtd) {
 				var list = [];
-				for (var i = 0; i < count; i++) {
+				for (var i = 0; i < count && (offset + i < 20); i++) {
 					list.push(offset + i);
 				}
 				dtd.resolve({
