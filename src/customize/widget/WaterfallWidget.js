@@ -18,12 +18,13 @@ define(function(require, exports, module) {
 			this.$waterfall = this.$('.ui-waterfall');
 			this.$viewport = this.$('.ui-viewport');
 			this.containerHeight = this.$viewport.height();
+			var preloadRow = Math.ceil(this.containerHeight / option.rowHeight)
 			this.waterfall = new Waterfall({
 				$el: this.$('.ui-waterfall'),
 				colWidth: option.colWidth,
 				queryFunction: option.queryFunction,
 				createItem: option.createItem,
-				preloadRow: option.preloadRow || 1,
+				preloadRow: preloadRow,
 				rowHeight: option.rowHeight
 			});
 
@@ -48,14 +49,13 @@ define(function(require, exports, module) {
 				}).bind(this),
 				middle: (function(prevRow, currentRow) {
 					var m = Math.ceil(this.containerHeight / (this.waterfall.rowHeight * 2)),
-						t = Math.ceil(this.containerHeight / this.waterfall.rowHeight),
 						noMoreData = this.waterfall.noMoreData,
 						totalRow = Math.ceil(this.waterfall.dataList.length / this.waterfall.colCount);
 
 					if (currentRow < m) {
 						this.offsetTop = 0;
-					} else if (noMoreData && (totalRow - currentRow) < (t - m)) {
-						this.offsetTop = (t - totalRow - m + 1) * this.waterfall.rowHeight;
+					} else if (noMoreData && (totalRow - currentRow) < (preloadRow - m)) {
+						this.offsetTop = (preloadRow - totalRow - m + 2) * this.waterfall.rowHeight;
 					} else {
 						this.offsetTop = (m - currentRow) * this.waterfall.rowHeight;
 					}
