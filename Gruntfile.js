@@ -47,12 +47,24 @@ module.exports = function(grunt) {
                 files: {
                     'build/<%= pkg.name %>.js': ['./dist/customize/app.js']
                 }
+            },
+            entry: {
+                options: {
+                    // Task-specific options go here.
+                    'paths': ['./', './src', './src/customize', './src/customize/widget', './dist', './lib'],
+                    'include': 'self',
+                    'noncmd': true,
+                    'css2js': style.css2js
+                },
+                files: {
+                    'build/<%= pkg.name %>.js': ['./entry.js', 'build/<%= pkg.name %>.js']
+                }
             }
         },
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                sourceMap: 'build/<%= pkg.name %>.map'
+                sourceMap: 'build/<%= pkg.name %>.js.map'
             },
             build: {
                 src: 'build/<%= pkg.name %>.js',
